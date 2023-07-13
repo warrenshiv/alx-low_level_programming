@@ -1,126 +1,114 @@
+#include<string.h>
 #include "main.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <ctype.h>
-
 /**
- * _is_zero - determines if any number is zero
- * @argv: argument vector.
+ * _isdigit - checks if character is digit
+ * @c: the character to check
  *
- * Return: no return.
+ * Return: 1 if digit, 0 otherwise
  */
-void _is_zero(char *argv[])
+int _isdigit(int c)
 {
-	int i, isn1 = 1, isn2 = 1;
-
-	for (i = 0; argv[1][i]; i++)
-		if (argv[1][i] != '0')
-		{
-			isn1 = 0;
-			break;
-		}
-
-	for (i = 0; argv[2][i]; i++)
-		if (argv[2][i] != '0')
-		{
-			isn2 = 0;
-			break;
-		}
-
-	if (isn1 == 1 || isn2 == 1)
-	{
-		printf("0\n");
-		exit(0);
-	}
+	return (c >= '0' && c <= '9');
 }
 
 /**
- * _initialize_array - set memery to zero in a new array
- * @ar: char array.
- * @lar: length of the char array.
+ * _strlen - returns the length of a string
+ * @s: the string whose length to check
  *
- * Return: pointer of a char array.
+ * Return: integer length of string
  */
-char *_initialize_array(char *ar, int lar)
+int _strlen(char *s)
 {
 	int i = 0;
 
-	for (i = 0; i < lar; i++)
-		ar[i] = '0';
-	ar[lar] = '\0';
-	return (ar);
+	while (*s++)
+		i++;
+	return (i);
 }
 
 /**
- * _checknum - determines length of the number
- * and checks if number is in base 10.
- * @argv: arguments vector.
- * @n: row of the array.
+ * big_multiply - multiply two big number strings
+ * @s1: the first big number string
+ * @s2: the second big number string
  *
- * Return: length of the number.
+ * Return: the product big number string
  */
-int _checknum(char *argv[], int n)
+char *big_multiply(char *s1, char *s2)
 {
-	int ln;
+	char *r;
+	int l1, l2, a, b, c, x;
 
-	for (ln = 0; argv[n][ln]; ln++)
-		if (!isdigit(argv[n][ln]))
+	l1 = _strlen(s1);
+	l2 = _strlen(s2);
+	r = malloc(a = x = l1 + l2);
+	if (!r)
+		printf("Error\n"), exit(98);
+	while (a--)
+		r[a] = 0;
+
+	for (l1--; l1 >= 0; l1--)
+	{
+		if (!_isdigit(s1[l1]))
 		{
-			printf("Error\n");
-			exit(98);
+			free(r);
+			printf("Error\n"), exit(98);
 		}
+		a = s1[l1] - '0';
+		c = 0;
 
-	return (ln);
+		for (l2 = _strlen(s2) - 1; l2 >= 0; l2--)
+		{
+			if (!_isdigit(s2[l2]))
+			{
+				free(r);
+				printf("Error\n"), exit(98);
+			}
+			b = s2[l2] - '0';
+
+			c += r[l1 + l2 + 1] + (a * b);
+			r[l1 + l2 + 1] = c % 10;
+
+			c /= 10;
+		}
+		if (c)
+			r[l1 + l2 + 1] += c;
+	}
+	return (r);
 }
 
+
 /**
- * main - Entry point.
- * program that multiplies two positive numbers.
- * @argc: number of arguments.
- * @argv: arguments vector.
+ * main - multiply two big number strings
+ * @argc: the number of arguments
+ * @argv: the argument vector
  *
- * Return: 0 - success.
+ * Return: Always 0 on success.
  */
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
-	int ln1, ln2, lnout, add, addl, i, j, k, ca;
-	char *nout;
+	char *r;
+	int a, c, x;
 
 	if (argc != 3)
 		printf("Error\n"), exit(98);
-	ln1 = _checknum(argv, 1), ln2 = _checknum(argv, 2);
-	_is_zero(argv), lnout = ln1 + ln2, nout = malloc(lnout + 1);
-	if (nout == NULL)
-		printf("Error\n"), exit(98);
-	nout = _initialize_array(nout, lnout);
-	k = lnout - 1, i = ln1 - 1, j = ln2 - 1, ca = addl = 0;
-	for (; k >= 0; k--, i--)
+
+	x = _strlen(argv[1]) + _strlen(argv[2]);
+	r = big_multiply(argv[1], argv[2]);
+	c = 0;
+	a = 0;
+	while (c < x)
 	{
-		if (i < 0)
-		{
-			if (addl > 0)
-			{
-				add = (nout[k] - '0') + addl;
-				if (add > 9)
-					nout[k - 1] = (add / 10) + '0';
-				nout[k] = (add % 10) + '0';
-			}
-			i = ln1 - 1, j--, addl = 0, ca++, k = lnout - (1 + ca);
-		}
-		if (j < 0)
-		{
-			if (nout[0] != '0')
-				break;
-			lnout--;
-			free(nout), nout = malloc(lnout + 1), nout = _initialize_array(nout, lnout);
-			k = lnout - 1, i = ln1 - 1, j = ln2 - 1, ca = addl = 0;
-		}
-		if (j >= 0)
-		{
-			add = ((argv[1][i] - '0') * (argv[2][j] - '0')) + (nout[k] - '0') + addl;
-			addl = add / 10, nout[k] = (add % 10) + '0';
-		}
+		if (r[c])
+			a = 1;
+		if (a)
+			putchar(r[c] + '0');
+		c++;
 	}
-	printf("%s\n", nout);
+	if (!a)
+		putchar('0');
+	putchar('\n');
+	free(r);
 	return (0);
 }
