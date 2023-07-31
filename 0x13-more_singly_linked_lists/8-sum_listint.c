@@ -1,5 +1,5 @@
 #include "lists.h"
-#include "stdio.h"
+#include <stdio.h>
 
 /**
  * sum_listint - calculates the sum of all the data in a listint_t list
