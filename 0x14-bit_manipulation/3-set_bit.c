@@ -1,6 +1,6 @@
 /*
  * File: 3-set_bit.c
- * Auth: WarrenTEchWhiz
+ * Auth: WarrenTechWhiz
  */
 
 #include "main.h"
